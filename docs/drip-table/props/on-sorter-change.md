@@ -1,20 +1,16 @@
 ---
-title: 变动触发 onChange
+title: 排序触发 onSorterChange
 toc: content
 ---
 
-## 变动触发 onChange
+## 排序变动触发 onSorterChange
 
-- 描述：过滤器、分页器 等配置变化
+- 描述：排序配置变化
 - 类型：
 
 ```typescript
-type OnChange = (
-  options: {
-    pagination: DripTablePagination;
-    filters: DripTableFilters;
-    sorter: DripTableSorter;
-  },
+type onSorterChange = (
+  sorter: DripTableSorter,
   tableInfo: DripTableTableInformation<RecordType, ExtraOptions>,
 ) => void;
 ```
@@ -95,9 +91,9 @@ const Demo = () => {
     <DripTable
       schema={schema}
       dataSource={dataSource}
-      onChange={({ pagination, filters }) => {
-        message.info(`过滤器：${JSON.stringify(filters)}，分页器：current = ${pagination.current}, pageSize = ${pagination.pageSize}。`);
-        console.log('onChange', pagination, filters);
+      onSorterChange={(sorter) => {
+        message.info(`排序：${JSON.stringify(sorter)}。`);
+        console.log('onChange', sorter);
       }}
     />
   );

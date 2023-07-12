@@ -469,8 +469,10 @@ const getDripTablePropsAjvSchema = (options?: AjvOptions) => {
         onSelectionChange: { instanceof: 'Function' },
         onSearch: { instanceof: 'Function' },
         onInsertButtonClick: { instanceof: 'Function' },
-        onFilterChange: { instanceof: 'Function' },
         onPageChange: { instanceof: 'Function' },
+        onPaginationChange: { instanceof: 'Function' },
+        onSorterChange: { instanceof: 'Function' },
+        onFilterChange: { instanceof: 'Function' },
         onChange: { instanceof: 'Function' },
         onDataSourceChange: { instanceof: 'Function' },
         onDisplayColumnKeysChange: { instanceof: 'Function' },
@@ -674,6 +676,11 @@ export const validateDripTableColumnSchema = (data: unknown, schema?: SchemaObje
         ],
       },
       hidable: { type: 'boolean' },
+      sorter: { type: 'string' },
+      sortDirections: {
+        type: 'array',
+        items: { enum: ['ascend', 'descend'] },
+      },
       filters: {
         type: 'array',
         items: {

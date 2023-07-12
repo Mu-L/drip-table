@@ -48,12 +48,21 @@ export interface IDripTableContext<
     api: CallableFunction | CallableFunction[] | null;
     tab: number; // 如果api是数组，需要在最顶层感知tab，来知道到底点击搜索调用的是啥api
     extraData: null; // 需要用到的 dataSource 以外的扩展返回值
+    pendingChanging: boolean;
     pagination: {
       current: number;
       total: number;
       pageSize: number;
     };
+    paginationChanged: boolean;
+    sorter: {
+      key: string | null;
+      direction: 'ascend' | 'descend' | null;
+      comparer: ((a: RecordType, b: RecordType) => number) | null;
+    };
+    sorterChanged: boolean;
     filters: Record<string, (boolean | React.Key)[] | null>;
+    filtersChanged: boolean;
     tableSize: 'default';
     layout: 'table' | 'card' | 'calendar';
     checkPassed: boolean;
@@ -71,12 +80,21 @@ export const createTableState = (): IDripTableContext['state'] => ({
   api: null,
   tab: 0,
   extraData: null,
+  pendingChanging: false,
   pagination: {
     current: 1,
     total: 0,
     pageSize: 10,
   },
+  paginationChanged: false,
+  sorter: {
+    key: null,
+    direction: null,
+    comparer: null,
+  },
+  sorterChanged: false,
   filters: {},
+  filtersChanged: false,
   tableSize: 'default',
   checkPassed: true,
   selectedRowKeys: [],

@@ -1,20 +1,16 @@
 ---
-title: 变动触发 onChange
+title: 分页器变动触发 onPaginationChange
 toc: content
 ---
 
-## 变动触发 onChange
+## 分页器变动触发 onPaginationChange
 
-- 描述：过滤器、分页器 等配置变化
+- 描述：分页器配置变化
 - 类型：
 
 ```typescript
-type OnChange = (
-  options: {
-    pagination: DripTablePagination;
-    filters: DripTableFilters;
-    sorter: DripTableSorter;
-  },
+type onPaginationChange = (
+  pagination: DripTablePagination,
   tableInfo: DripTableTableInformation<RecordType, ExtraOptions>,
 ) => void;
 ```
@@ -33,6 +29,9 @@ import React from "react";
 import DripTable from "drip-table";
 
 const schema = {
+  pagination: {
+    pageSize: 10,
+  },
   columns: [
     {
       key: "mock_1",
@@ -43,7 +42,6 @@ const schema = {
         mode: "single",
         maxRow: 1,
       },
-      sorter: 'return props.leftValue == props.rightValue ? 0 : props.leftValue > props.rightValue ? 1 : -1',
     },
     {
       key: "mock_2",
@@ -95,9 +93,9 @@ const Demo = () => {
     <DripTable
       schema={schema}
       dataSource={dataSource}
-      onChange={({ pagination, filters }) => {
-        message.info(`过滤器：${JSON.stringify(filters)}，分页器：current = ${pagination.current}, pageSize = ${pagination.pageSize}。`);
-        console.log('onChange', pagination, filters);
+      onPaginationChange={(pagination) => {
+        message.info(`分页器：${JSON.stringify(pagination)}。`);
+        console.log('onChange', pagination);
       }}
     />
   );

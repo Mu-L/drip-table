@@ -1,26 +1,13 @@
 ---
-title: 变动触发 onChange
+title: 排序方式 sortDirections
 toc: content
 ---
 
-## 变动触发 onChange
+## 排序方式 columns.sortDirections
 
-- 描述：过滤器、分页器 等配置变化
-- 类型：
-
-```typescript
-type OnChange = (
-  options: {
-    pagination: DripTablePagination;
-    filters: DripTableFilters;
-    sorter: DripTableSorter;
-  },
-  tableInfo: DripTableTableInformation<RecordType, ExtraOptions>,
-) => void;
-```
-
+- 描述：数据排序支持的方式
+- 类型：`('ascend' | 'descend')[]`
 - 默认值：`undefined`
-- 说明：[`DripTableTableInformation<RecordType, ExtraOptions>`](/drip-table/types/table-information)
 
 ```jsx
 /**
@@ -39,10 +26,7 @@ const schema = {
       title: "商品名称",
       dataIndex: "name",
       component: "text",
-      options: {
-        mode: "single",
-        maxRow: 1,
-      },
+      options: { mode: "single", maxRow: 1 },
       sorter: 'return props.leftValue == props.rightValue ? 0 : props.leftValue > props.rightValue ? 1 : -1',
     },
     {
@@ -51,11 +35,8 @@ const schema = {
       align: "center",
       dataIndex: "description",
       component: "text",
-      options: {
-        mode: "single",
-        ellipsis: true,
-        maxRow: 1,
-      },
+      options: { mode: "single", ellipsis: true, maxRow: 1 },
+      sorter: 'return props.leftRecord.description == props.rightRecord.description ? 0 : props.leftRecord.description > props.rightRecord.description ? 1 : -1',
     },
     {
       key: 'mock_3',
@@ -64,12 +45,6 @@ const schema = {
       align: 'center',
       dataIndex: 'status',
       description: '这是一条提示信息',
-      hidable: true,
-      filters: [
-        { text: '售卖中', value: 'onSale' },
-        { text: '已售罄', value: 'soldOut' },
-      ],
-      defaultFilteredValue: ['onSale', 'soldOut'],
       component: 'text',
       options: {
         mode: 'single',
@@ -78,6 +53,8 @@ const schema = {
           soldOut: '已售罄',
         },
       },
+      sorter: 'return props.leftValue == props.rightValue ? 0 : props.leftValue > props.rightValue ? 1 : -1',
+      sortDirections: ['ascend'],
     },
   ],
 };
@@ -86,18 +63,24 @@ const dataSource = Array(100).fill(0).map((_, i) => ({
   id: i + 1,
   name: `商品${i + 1}`,
   price: 7999,
-  status: "onSale",
+  status: Math.random() > 0.5 ? "onSale" : "soldOut",
   description: "商品是为了出售而生产的劳动成果，是人类社会生产力发展到一定历史阶段的产物，是用于交换的劳动产品。",
 }));
 
 const Demo = () => {
+  const [ds, setDS] = React.useState(dataSource);
   return (
     <DripTable
       schema={schema}
-      dataSource={dataSource}
-      onChange={({ pagination, filters }) => {
-        message.info(`过滤器：${JSON.stringify(filters)}，分页器：current = ${pagination.current}, pageSize = ${pagination.pageSize}。`);
-        console.log('onChange', pagination, filters);
+      dataSource={ds}
+      onChange={({ sorter }) => {
+        if (sorter.comparer) {
+          setDS([...dataSource].sort(sorter.comparer))
+        } else {
+          setDS(dataSource)
+        }
+        message.info(`排序：${JSON.stringify(sorter)}。`);
+        console.log('onChange', sorter);
       }}
     />
   );
